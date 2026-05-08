@@ -1,0 +1,64 @@
+{
+  "name": "delx-wellness-openclaw",
+  "version": "0.1.0",
+  "description": "Turn OpenClaw into a local-first wellness agent with guided setup, onboarding, MCP connector presets, wellness skills and doctor checks.",
+  "license": "MIT",
+  "homepage": "https://wellness.delx.ai/openclaw",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/davidmosiah/delx-wellness-openclaw.git"
+  },
+  "bugs": {
+    "url": "https://github.com/davidmosiah/delx-wellness-openclaw/issues"
+  },
+  "keywords": [
+    "openclaw",
+    "wellness",
+    "mcp",
+    "ai-agents",
+    "openclaw-cli",
+    "wearables",
+    "whoop",
+    "garmin",
+    "oura",
+    "fitbit",
+    "nutrition",
+    "delx"
+  ],
+  "type": "module",
+  "bin": {
+    "delx-wellness-openclaw": "bin/delx-wellness-openclaw.js"
+  },
+  "files": [
+    "bin",
+    "dist",
+    "assets",
+    "skills",
+    "templates",
+    "LICENSE",
+    "README.md",
+    "llms.txt",
+    "SECURITY.md"
+  ],
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "npm run typecheck && tsx --test tests/*.test.ts",
+    "prepack": "npm run build",
+    "doctor": "tsx src/cli.ts doctor",
+    "e2e": "tsx src/cli.ts e2e",
+    "setup": "tsx src/cli.ts setup",
+    "install:dry-run": "tsx src/cli.ts install --dry-run",
+    "onboarding": "tsx src/cli.ts onboarding"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@types/node": "^25.6.0",
+    "tsx": "^4.20.6",
+    "typescript": "^6.0.3"
+  }
+}
