@@ -53,12 +53,19 @@
     "e2e": "tsx src/cli.ts e2e",
     "setup": "tsx src/cli.ts setup",
     "install:dry-run": "tsx src/cli.ts install --dry-run",
-    "onboarding": "tsx src/cli.ts onboarding"
+    "onboarding": "tsx src/cli.ts onboarding",
+    "prepublishOnly": "npm test"
   },
   "dependencies": {},
   "devDependencies": {
     "@types/node": "^25.6.0",
     "tsx": "^4.20.6",
     "typescript": "^6.0.3"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
