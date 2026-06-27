@@ -105,7 +105,7 @@ export async function installDelxWellnessOpenClawProfile(options: InstallOptions
   await fs.cp(packageSkillsDir, skillsDir, { recursive: true });
   changedFiles.push(skillsDir);
 
-  for (const templateName of ["SOUL.md", "AGENTS.md", "ONBOARDING.md"] as const) {
+  for (const templateName of ["SOUL.md", "AGENTS.md", "ONBOARDING.md", "DAILY_OPERATOR.md"] as const) {
     const destination = path.join(workspaceDir, templateName);
     await fs.mkdir(path.dirname(destination), { recursive: true });
     await backupIfExists(destination);

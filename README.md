@@ -24,7 +24,7 @@
 </p>
 
 <p align="center">
-  <strong>What is this?</strong> A one-command installer that wires <strong>11 wellness MCP connectors</strong> + a recovery-aware <code>SOUL.md</code> + onboarding + skills into a dedicated OpenClaw profile. No fork, no hosted vault, no token leaves your machine.
+  <strong>What is this?</strong> A one-command installer and daily wellness operator that wires <strong>11 wellness MCP connectors</strong> + a recovery-aware <code>SOUL.md</code> + onboarding + skills into a dedicated OpenClaw profile. No fork, no hosted vault, no token leaves your machine.
 </p>
 
 ---
@@ -47,6 +47,14 @@ openclaw --profile delx-wellness models
 npx -y delx-wellness-openclaw doctor --profile delx-wellness --run-openclaw --test-chat
 ```
 
+Run the first useful workflow:
+
+```bash
+openclaw --profile delx-wellness agent --local --message "$(npx -y delx-wellness-openclaw operator --prompt-only)"
+```
+
+That launches the **Daily Operator**: setup check, available data, one daily read, one recovery/training action, one nutrition action, and a missing-setup checklist. No OAuth tokens or secrets are collected in chat.
+
 If you are new to OpenClaw, install OpenClaw first:
 
 ```bash
@@ -61,6 +69,7 @@ openclaw --profile delx-wellness agent --local --message "Open Delx Wellness onb
 
 - **🚀 One profile, not ten configs.** Stop wiring connectors by hand &mdash; one command sets up the whole stack in a OpenClaw profile.
 - **💬 Built for daily use.** Real on OpenClaw terminal, Telegram and other MCP clients &mdash; not a one-off demo.
+- **🧭 Daily Operator included.** One prompt turns available MCP data into a compact daily plan with evidence, actions and setup gaps.
 - **🥗 Works immediately.** Nourish (local nutrition) is wired without OAuth, so you can chat about food the moment setup finishes.
 - **⌚ Ten wearable/API/export sources ready.** WHOOP, Garmin, Oura, Strava, Fitbit, Google Health, Withings, Apple Health, Samsung Health and Polar presets included.
 - **🧠 Onboarding-aware.** The agent gets your goals, schedule, equipment, dietary restrictions and conservative-decision rules **before** it gives advice.
@@ -119,7 +128,8 @@ flowchart LR
 - creates or updates `~/.openclaw-delx-wellness/openclaw.json`
 - creates `~/.openclaw-delx-wellness/workspace`
 - installs `SOUL.md`, `AGENTS.md` and `ONBOARDING.md` into the OpenClaw workspace
-- installs Delx Wellness skills for **onboarding · daily brief · training · sleep · nutrition · setup**
+- installs `DAILY_OPERATOR.md` with the copyable daily operator prompt
+- installs Delx Wellness skills for **onboarding · daily brief · daily operator · training · sleep · nutrition · setup**
 - writes local MCP presets under OpenClaw's `mcp.servers` config for WHOOP, Garmin, Oura, Strava, Fitbit, Google Health, Withings, Apple Health, Samsung Health, Polar and Nourish
 - runs OpenClaw profile checks when `openclaw` is available
 - checks that OpenClaw can see the `nourish` MCP server preset (it does not require OAuth)
@@ -129,6 +139,19 @@ Preview before writing:
 
 ```bash
 npx -y delx-wellness-openclaw setup --dry-run
+```
+
+Preview the operator prompt:
+
+```bash
+npx -y delx-wellness-openclaw operator
+npx -y delx-wellness-openclaw operator --prompt-only
+```
+
+Copy `DAILY_OPERATOR.md` into the active workspace without running setup again:
+
+```bash
+npx -y delx-wellness-openclaw operator --write
 ```
 
 Skip the Nourish smoke test:

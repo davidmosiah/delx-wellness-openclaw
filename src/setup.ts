@@ -146,12 +146,14 @@ function nextStepsFor(options: {
     return [
       "Install OpenClaw from https://docs.openclaw.ai/cli or with: npm install -g openclaw",
       `Then run: npx -y delx-wellness-openclaw doctor --profile ${options.profileName} --run-openclaw`,
+      `Preview the daily operator prompt: npx -y delx-wellness-openclaw operator --profile ${options.profileName}`,
       `Start OpenClaw with: openclaw --profile ${options.profileName} agent --local --message "Open Delx Wellness onboarding"`
     ];
   }
 
   const steps = [
     `Configure a model/provider if this profile does not have one yet: openclaw --profile ${options.profileName} models`,
+    `Run the daily operator: openclaw --profile ${options.profileName} agent --local --message "$(npx -y delx-wellness-openclaw operator --prompt-only)"`,
     `Start the wellness agent: openclaw --profile ${options.profileName} agent --local --message "Open Delx Wellness onboarding"`,
     "Connect provider credentials only through each connector's setup flow; never paste OAuth tokens into chat."
   ];

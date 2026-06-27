@@ -8,7 +8,9 @@ import {
   buildOpenClawProfileConfig,
   createOnboardingFile,
   DEFAULT_WELLNESS_PROFILE,
+  createDailyOperatorFile,
   doctorDelxWellnessOpenClawProfile,
+  formatDailyOperatorPrompt,
   formatOnboardingQuestions,
   installDelxWellnessOpenClawProfile,
   liteConnectorIds,
@@ -185,8 +187,10 @@ test("installer write creates public-safe OpenClaw profile files", async () => {
   const soul = await fs.readFile(path.join(workspace, "SOUL.md"), "utf8");
   const agents = await fs.readFile(path.join(workspace, "AGENTS.md"), "utf8");
   const onboarding = await fs.readFile(path.join(workspace, "ONBOARDING.md"), "utf8");
+  const dailyOperator = await fs.readFile(path.join(workspace, "DAILY_OPERATOR.md"), "utf8");
   const wellnessProfile = JSON.parse(await fs.readFile(path.join(workspace, "wellness-profile.json"), "utf8")) as typeof DEFAULT_WELLNESS_PROFILE;
   const copiedSkill = await fs.readFile(path.join(openclawHome, "skills", "delx-wellness", "delx-wellness-onboarding", "SKILL.md"), "utf8");
+  const copiedOperatorSkill = await fs.readFile(path.join(openclawHome, "skills", "delx-wellness", "delx-wellness-daily-operator", "SKILL.md"), "utf8");
 
   assert.ok(config.mcp?.servers?.whoop);
   assert.ok(config.skills?.load?.extraDirs?.some((item) => item.includes("skills/delx-wellness")));
@@ -195,12 +199,31 @@ test("installer write creates public-safe OpenClaw profile files", async () => {
   assert.match(soul, /freshness/i);
   assert.match(agents, /Never print/i);
   assert.match(onboarding, /Devices and Data Sources/i);
+  assert.match(dailyOperator, /Daily Operator Prompt/i);
   assert.equal(wellnessProfile.schema, "delx-wellness-profile/v1");
   assert.deepEqual(wellnessProfile.preferences.language_priority, ["en", "pt-BR"]);
   assert.match(copiedSkill, /Delx Wellness Onboarding/i);
+  assert.match(copiedOperatorSkill, /Daily Operator loop/i);
 
   const doctor = await doctorDelxWellnessOpenClawProfile({ openclawHome, packageRoot });
   assert.equal(doctor.ready, true);
+});
+
+test("daily operator helper writes the operator template and prints a safe prompt", async () => {
+  const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "delx-wellness-operator-"));
+  const openclawHome = path.join(tempDir, ".openclaw-delx-wellness");
+
+  const result = await createDailyOperatorFile({ openclawHome, packageRoot, write: true });
+  const written = await fs.readFile(result.operatorPath, "utf8");
+  const prompt = formatDailyOperatorPrompt();
+
+  assert.equal(result.written, true);
+  assert.equal(result.profileName, "delx-wellness");
+  assert.match(result.openclawCommand, /delx-wellness-openclaw operator --prompt-only/);
+  assert.match(written, /OpenClaw Command/i);
+  assert.match(prompt, /Prefer delx-living-body/i);
+  assert.match(prompt, /Do not ask me to paste OAuth tokens/i);
+  assert.equal(/refresh token|api key|password/i.test(prompt.replace(/Do not ask me to paste OAuth tokens, refresh tokens, cookies, passwords, API keys/i, "")), false);
 });
 
 test("doctor test-chat surfaces missing OpenClaw inference provider", async () => {

@@ -3,6 +3,7 @@ import { doctorDelxWellnessOpenClawProfile } from "./doctor.js";
 import { runDelxWellnessE2E } from "./e2e.js";
 import { installDelxWellnessOpenClawProfile } from "./install.js";
 import { createOnboardingFile, formatOnboardingQuestions } from "./onboarding.js";
+import { createDailyOperatorFile } from "./operator.js";
 import { formatSetupResult, setupDelxWellnessOpenClaw } from "./setup.js";
 import type { WellnessLanguage } from "./wellness-profile.js";
 
@@ -104,6 +105,32 @@ async function main(argv: string[]): Promise<void> {
     return;
   }
 
+  if (parsed.command === "operator") {
+    const operatorOptions: Parameters<typeof createDailyOperatorFile>[0] = {
+      profileName: stringOption(parsed.options.profile, "delx-wellness"),
+      write: parsed.options.write === true
+    };
+    const result = await createDailyOperatorFile(operatorOptions);
+
+    if (parsed.options["prompt-only"] === true) {
+      console.log(result.prompt);
+      return;
+    }
+
+    console.log(`Delx Wellness Daily Operator`);
+    console.log("");
+    console.log(`Profile: ${result.profileName}`);
+    console.log(`Workspace template: ${result.operatorPath}`);
+    console.log(`Written: ${result.written ? "yes" : "no"}`);
+    console.log("");
+    console.log("OpenClaw command:");
+    console.log(result.openclawCommand);
+    console.log("");
+    console.log("--- prompt ---");
+    console.log(result.prompt);
+    return;
+  }
+
   if (parsed.command === "e2e") {
     const e2eOptions: Parameters<typeof runDelxWellnessE2E>[0] = {
       profileName: stringOption(parsed.options.profile, "delx-wellness")
@@ -200,6 +227,7 @@ function printUsage(): void {
   delx-wellness-openclaw doctor --profile delx-wellness --run-openclaw
   delx-wellness-openclaw doctor --profile delx-wellness --run-openclaw --test-chat
   delx-wellness-openclaw onboarding --profile delx-wellness [--language en|pt-BR]
+  delx-wellness-openclaw operator --profile delx-wellness [--write|--prompt-only]
   delx-wellness-openclaw e2e --profile delx-wellness --test-connectors nourish
 `);
 }

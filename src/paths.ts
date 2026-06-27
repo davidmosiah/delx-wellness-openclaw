@@ -26,6 +26,8 @@ export function resolveProfileSkillsDir(openclawHome: string): string {
   return path.join(openclawHome, "skills", "delx-wellness");
 }
 
-export function resolvePackageTemplatePath(name: "SOUL.md" | "AGENTS.md" | "ONBOARDING.md", packageRoot = resolvePackageRoot()): string {
+export type PackageTemplateName = "SOUL.md" | "AGENTS.md" | "ONBOARDING.md" | "DAILY_OPERATOR.md";
+
+export function resolvePackageTemplatePath(name: PackageTemplateName, packageRoot = resolvePackageRoot()): string {
   return path.join(packageRoot, "templates", name);
 }
