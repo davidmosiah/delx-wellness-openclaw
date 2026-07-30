@@ -105,7 +105,13 @@ test("buildLocalMcpServerConfig returns valid {command, args} shape for public c
     assert.ok(cfg, `Public preset ${preset.id} returned undefined config`);
     assert.equal(cfg!.command, "npx");
     assert.ok(Array.isArray(cfg!.args), `Preset ${preset.id} config.args must be an array`);
-    assert.ok(cfg!.args!.includes(preset.packageName), `Preset ${preset.id} args missing packageName`);
+    const spec = preset.packageVersion
+      ? `${preset.packageName}@${preset.packageVersion}`
+      : preset.packageName;
+    assert.ok(
+      cfg!.args!.includes(spec) || cfg!.args!.some((a) => String(a).startsWith(`${preset.packageName}@`)),
+      `Preset ${preset.id} args missing pinned packageName (got ${JSON.stringify(cfg!.args)})`,
+    );
     assert.ok(cfg!.args!.includes("-y"), `Preset ${preset.id} args missing -y flag (non-interactive npx)`);
   }
 });
